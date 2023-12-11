@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { contractABI, contractAddress } from "../utils/constans";
 export const TransactionContext = React.createContext();
+import { ethers } from "ethers";
 
 const { ethereum } = window;
 
@@ -12,7 +13,7 @@ const getEthereumContract = () => {
     contractABI,
     signer
   );
-  console.log({ provider, signer, transactionContract });
+  return transactionContract;
 };
 
 export const TransactionProvider = ({ children }) => {
@@ -23,6 +24,10 @@ export const TransactionProvider = ({ children }) => {
     keyword: "",
     message: "",
   });
+  const [isLoading, setisLoading] = useState(false);
+  const [transactionCount, settransactionCount] = useState(
+    localStorage.getItem("transactionCount")
+  );
   const handleChange = (e, name) => {
     setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
@@ -53,16 +58,49 @@ export const TransactionProvider = ({ children }) => {
       throw new Error("no ethereum object");
     }
   };
-
   const sendTransaction = async () => {
     try {
-      if (!ethereum) return alert("please install metamask wallet");
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
+      if (ethereum) {
+        const { addressTo, amount, keyword, message } = formData;
+        const parsedAmount = ethers.parseEther(amount);
+
+        await ethereum.request({
+          method: "eth_sendTransaction",
+          params: [
+            {
+              from: currentAccount,
+              to: addressTo,
+              gas: "0x5208",
+              value: parsedAmount.toString(16),
+            },
+          ],
+        });
+
+        const transactionHash = await transactionsCount.addToBlockchain(
+          addressTo,
+          parsedAmount,
+          message,
+          keyword
+        );
+
+        setisLoading(true);
+        console.log(`Loading - ${transactionHash.hash}`);
+        await transactionHash.wait();
+        console.log(`Success - ${transactionHash.hash}`);
+        setisLoading(false);
+
+        const transactionsCount =
+          await transactionsContract.getTransactionCount();
+
+        transactionsCount(transactionsCount.toNumber());
+        window.location.reload();
+      } else {
+        console.log("No ethereum object");
+      }
     } catch (error) {
       console.log(error);
-      throw new Error("no ethereum object");
+
+      throw new Error("No ethereum object");
     }
   };
   useEffect(() => {
