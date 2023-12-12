@@ -1,13 +1,6 @@
-import { useState } from "react";
 import "./index.css";
 import "./App.css";
-import {
-  Navbar,
-  Welcome,
-  Footer,
-  Services,
-  Transactions,
-} from "../src/components/index";
+import { Navbar, Welcome, Footer, Services } from "../src/components/index";
 
 function App() {
   return (
@@ -17,8 +10,6 @@ function App() {
         <Welcome />
       </div>
       <Services />
-      <Transactions />
-      <Footer />
     </div>
   );
 }

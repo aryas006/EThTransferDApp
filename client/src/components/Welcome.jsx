@@ -4,6 +4,7 @@ import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
 import { TransactionContext } from "../context/TransactionContext";
 import { Loader } from "./index";
+import { shortenAddress } from "../utils/shortenAddress";
 const companyCommonStyles =
   "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
 const Input = ({ placeholder, name, type, value, handleChange }) => (
@@ -24,7 +25,8 @@ const Welcome = () => {
     formData,
     sendTransaction,
     handleChange,
-  } = useContext(TransactionContext);1
+  } = useContext(TransactionContext);
+  1;
 
   const handleSubmit = (e) => {
     const { addressTo, amount, keyword, message } = formData;
@@ -81,7 +83,9 @@ const Welcome = () => {
                 <BsInfoCircle fontSize={17} color="#fff" />
               </div>
               <div>
-                <p className="text-sm font-light text-white">0x...</p>
+                <p className="text-sm font-light text-white">
+                  {shortenAddress(currentAccount)}
+                </p>
                 <p className="mt-1 text-lg font-semibold text-white">
                   Ethereum
                 </p>

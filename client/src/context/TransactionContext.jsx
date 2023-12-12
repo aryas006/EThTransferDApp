@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { contractABI, contractAddress } from "../utils/constans";
 export const TransactionContext = React.createContext();
 import { ethers } from "ethers";
+import "../utils/constans";
 
 const { ethereum } = window;
 
@@ -76,7 +77,7 @@ export const TransactionProvider = ({ children }) => {
           ],
         });
 
-        const transactionHash = await transactionsCount.addToBlockchain(
+        const transactionHash = await transactionContract.addToBlockchain(
           addressTo,
           parsedAmount,
           message,
@@ -90,7 +91,7 @@ export const TransactionProvider = ({ children }) => {
         setisLoading(false);
 
         const transactionsCount =
-          await transactionsContract.getTransactionCount();
+          await transactionContract.getTransactionCount();
 
         transactionsCount(transactionsCount.toNumber());
         window.location.reload();
